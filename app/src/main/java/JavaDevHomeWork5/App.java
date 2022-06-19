@@ -3,12 +3,30 @@
  */
 package JavaDevHomeWork5;
 
+import JavaDevHomeWork5.pet.model.PetStatus;
+import JavaDevHomeWork5.user.model.User;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+//        User user = User.builder()
+//                .id(0L)
+//                .email("email")
+//                .firstName("firstName")
+//                .lastName("lastName")
+//                .password("1234567890")
+//                .phone("9379992")
+//                .username("petrovich")
+//                .userStatus(2)
+//                .build();
+//        String name = PetStatus.pending.toString();
+//        System.out.println("name = " + name);
+
     }
 }
