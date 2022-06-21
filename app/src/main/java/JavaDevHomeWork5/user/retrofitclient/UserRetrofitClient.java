@@ -1,4 +1,4 @@
-package JavaDevHomeWork5.retrofit.client;
+package JavaDevHomeWork5.user.retrofitclient;
 
 import JavaDevHomeWork5.responce.model.ApiResponse;
 import JavaDevHomeWork5.user.model.User;
@@ -37,7 +37,7 @@ public interface UserRetrofitClient {
     @Headers({"Content-Type: application/json"})
     Call<ApiResponse> userLogout ();
 
-    @POST("user/{username}")
+    @POST("user")
     @Headers({"Content-Type: application/json"})
-    Call<ApiResponse> addUser (@Path("username") String username, @Body User user);
+    Call<ApiResponse> addUser (@Body User user);
 }

@@ -1,18 +1,16 @@
-package JavaDevHomeWork5.retrofit.client;
+package JavaDevHomeWork5.pet.retrofitclient;
 
 import JavaDevHomeWork5.pet.model.Pet;
-import JavaDevHomeWork5.pet.model.PetStatus;
 import JavaDevHomeWork5.responce.model.ApiResponse;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
 
 public interface PetRetrofitClient {
+    @FormUrlEncoded
     @POST("pet/{petId}/uploadImage")
-    @Headers({"Content-Type: application/json"})
-    Call<ApiResponse> uploadImage (@Path("petId") long petId, @Body RequestBody fileToUpload);
+    Call<ApiResponse> uploadImage (@Path("petId") long petId, @Field("additionalMetadata") String photoURL);
 
     @POST("pet")
     @Headers({"Content-Type: application/json"})
@@ -30,8 +28,8 @@ public interface PetRetrofitClient {
     @Headers({"Content-Type: application/json"})
     Call<Pet> getPetById (@Path("petId") long petId);
 
+    @FormUrlEncoded
     @POST("pet/{petId}")
-    @Headers({"Content-Type: application/json"})
     Call<ApiResponse> updatePet (@Path("petId") long petId, @Field("name") String name, @Field("status") String status);
 
     @DELETE("pet/{petId}")

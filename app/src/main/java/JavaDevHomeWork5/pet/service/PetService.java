@@ -6,7 +6,8 @@ import JavaDevHomeWork5.pet.model.PetStatus;
 import JavaDevHomeWork5.pet.model.Tag;
 import JavaDevHomeWork5.responce.model.ApiResponse;
 import JavaDevHomeWork5.retrofit.RetrofitService;
-import JavaDevHomeWork5.retrofit.client.PetRetrofitClient;
+import JavaDevHomeWork5.pet.retrofitclient.PetRetrofitClient;
+import JavaDevHomeWork5.utill.IdService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +15,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class PetService {
-    public static final PetRetrofitClient retrofitService= RetrofitService.getRetrofitService(PetRetrofitClient.class);
+public class PetService implements IdService {
+    public static final PetRetrofitClient retrofitService = RetrofitService.getRetrofitService(PetRetrofitClient.class);
     private final Scanner scanner;
 
     public PetService(Scanner scanner) {
         this.scanner = scanner;
+    }
+
+    public ApiResponse addPhotoWithPet () throws IOException {
+        long id = getIDFromCommandLine(scanner);
+        System.out.println("Write PHOTO_URL:");
+        String photoURL = scanner.nextLine();
+        return RetrofitService.cheekResponseCall(retrofitService.uploadImage(id, photoURL));
     }
 
     public Pet addNewPetToStore () throws IOException {
@@ -36,7 +44,7 @@ public class PetService {
                 + Arrays.toString(PetStatus.values()));
         for (char numberOfStatus : scanner.nextLine().toCharArray()) {
             int index = Character.getNumericValue(numberOfStatus)-1;
-            array.add(PetStatus.values()[index].getNameOfStatus());
+            array.add(PetStatus.values()[index].name());
         }
         String[] filterByStatus = new String[array.size()];
         array.toArray(filterByStatus);
@@ -44,29 +52,26 @@ public class PetService {
     }
 
     public Pet findPetById () throws IOException {
-        System.out.println("Write ID(long):");
-        long id = scanner.nextLong();
+        long id = getIDFromCommandLine(scanner);
         return RetrofitService.cheekResponseCall(retrofitService.getPetById(id));
     }
 
-    public ApiResponse updatePet() throws IOException {
-        System.out.println("Write ID(long)");
-        long id = scanner.nextLong();
+    public ApiResponse updateNameAndStatusPet() throws IOException {
+        long id = getIDFromCommandLine(scanner);
         System.out.println("Write PET_NAME for update:");
         String petName = scanner.nextLine();
         System.out.println("Choose number of PET_STATUS(1,2,3) for update:\n"
                 + Arrays.toString(PetStatus.values()));
-        PetStatus status = PetStatus.values()[scanner.nextInt()-1];
-        return RetrofitService.cheekResponseCall(retrofitService.updatePet(id,petName,status.getNameOfStatus()));
+        PetStatus status = PetStatus.values()[Integer.parseInt(scanner.nextLine())-1];
+        return RetrofitService.cheekResponseCall(retrofitService.updatePet(id, petName, status.name()));
     }
 
     public ApiResponse deletePet () throws IOException {
-        System.out.println("Write ID(long):");
-        long id = scanner.nextLong();
+        long id = getIDFromCommandLine(scanner);
         return RetrofitService.cheekResponseCall(retrofitService.deletePet(id));
     }
 
-    private Pet createPet(){
+    private Pet createPet() throws IOException {
         long id;
         Category category = new Category();
         String petName;
@@ -74,41 +79,43 @@ public class PetService {
         List<Tag> tags = new ArrayList<>();
         PetStatus status;
 
-        System.out.println("Write ID(long):");
-        id = scanner.nextLong();
-        System.out.println("Write PET_NAME:");
-        petName = scanner.nextLine();
-        System.out.println("Write CATEGORY_ID(long):");
-        category.setId(scanner.nextLong());
-        System.out.println("Write CATEGORY_NAME:");
-        category.setName(scanner.nextLine());
-        System.out.println("How many tags are you want to add?");
-        for (int i = 0; i < scanner.nextInt(); i++) {
-            Tag tag = new Tag();
-            System.out.println("Write TAG_ID(long):");
-            tag.setId(scanner.nextLong());
-            System.out.println("Write TAG_NAME:");
-            tag.setName(scanner.nextLine());
-            tags.add(tag);
+        try {
+            id = getIDFromCommandLine(scanner);
+            System.out.println("Write PET_NAME:");
+            petName = scanner.nextLine();
+            System.out.println("Write CATEGORY_ID(long):");
+            category.setId(Long.parseLong(scanner.nextLine()));
+            System.out.println("Write CATEGORY_NAME:");
+            category.setName(scanner.nextLine());
+            System.out.println("How many tags are you want to add?");
+            int index = Integer.parseInt(scanner.nextLine());
+            for (int i = 0; i < index; i++) {
+                Tag tag = new Tag();
+                System.out.println("Write TAG_ID(long):");
+                tag.setId(Long.parseLong(scanner.nextLine()));
+                System.out.println("Write TAG_NAME:");
+                tag.setName(scanner.nextLine());
+                tags.add(tag);
+            }
+            System.out.println("How many URL of photo are you want to add?");
+            index = Integer.parseInt(scanner.nextLine());
+            for (int i = 0; i < index; i++) {
+                System.out.println("Add PHOTO_URL:");
+                photoUrls.add(scanner.nextLine());
+            }
+            System.out.println("Choose number of PET_STATUS(1,2,3):\n"
+                    + Arrays.toString(PetStatus.values()));
+            status = PetStatus.values()[Integer.parseInt(scanner.nextLine()) - 1];
+            return Pet.builder()
+                    .id(id)
+                    .petName(petName)
+                    .status(status)
+                    .photoUrls(photoUrls)
+                    .category(category)
+                    .tags(tags)
+                    .build();
+        }catch (IOException|RuntimeException e){
+            throw new IOException(e);
         }
-        System.out.println("How many URL of photo are you want to add?");
-        for (int i = 0; i < scanner.nextInt(); i++) {
-            System.out.println("Add PHOTO_URL:");
-            photoUrls.add(scanner.nextLine());
-        }
-        System.out.println("Choose number of PET_STATUS(1,2,3):\n"
-                + Arrays.toString(PetStatus.values()));
-        status = PetStatus.values()[scanner.nextInt()-1];
-        return Pet.builder()
-                .id(id)
-                .petName(petName)
-                .status(status)
-                .photoUrls(photoUrls)
-                .category(category)
-                .tags(tags)
-                .build();
     }
-
-
-
 }

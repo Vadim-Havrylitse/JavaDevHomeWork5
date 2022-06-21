@@ -1,5 +1,8 @@
 package JavaDevHomeWork5.retrofit;
 
+import JavaDevHomeWork5.responce.model.ApiResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -26,12 +29,21 @@ public final class RetrofitService {
             System.out.println("You request is successful!");
             return execute.body();
         }else {
-            String errorMassage = execute.code()
+            ApiResponse apiResponse = parseErrBodyToApiResponse(execute);
+            String errorMassage = "You request is failed:\n"
+                    + apiResponse.getCode()
                     + " -> "
-                    + execute.errorBody().string();
-            System.err.println("You request is failed:\n"
-                    + errorMassage);
-            throw new RuntimeException(errorMassage);
+                    + apiResponse.getMessage();
+            throw new IOException(errorMassage);
+        }
+    }
+
+    private static <T> ApiResponse parseErrBodyToApiResponse(Response<T> execute){
+        try {
+            Gson gson = new Gson();
+            return gson.fromJson(execute.errorBody().string().replace("\"", "'"), ApiResponse.class);
+        }catch (RuntimeException | IOException e){
+            return new ApiResponse(execute.code(),"","Unknown error");
         }
     }
 

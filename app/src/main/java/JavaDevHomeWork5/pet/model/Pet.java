@@ -1,5 +1,6 @@
 package JavaDevHomeWork5.pet.model;
 
+import JavaDevHomeWork5.utill.ModelService;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
@@ -7,10 +8,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Data
 @Builder
-public class Pet implements Serializable {
+public class Pet implements Serializable, ModelService {
 
     @SerializedName("id")
     @Expose
@@ -30,6 +32,18 @@ public class Pet implements Serializable {
     @SerializedName("status")
     @Expose
     private PetStatus status;
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Pet.class.getSimpleName() + "[", "]")
+                .add("id=" + formatOutputData(id))
+                .add("category=" + formatOutputData(category))
+                .add("petName='" + formatOutputData(petName) + "'")
+                .add("photoUrls=" + formatOutputData(photoUrls))
+                .add("tags=" + formatOutputData(tags))
+                .add("status=" + formatOutputData(status))
+                .toString();
+    }
 
     private final static long serialVersionUID = 4321370639683641L;
 

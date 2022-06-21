@@ -15,6 +15,7 @@ public class Tag implements Serializable {
     @SerializedName("name")
     @Expose
     private String name;
+
     private final static long serialVersionUID = -358541370639683641L;
 
 }

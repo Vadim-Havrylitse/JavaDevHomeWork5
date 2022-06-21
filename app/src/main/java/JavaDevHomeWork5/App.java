@@ -3,30 +3,23 @@
  */
 package JavaDevHomeWork5;
 
-import JavaDevHomeWork5.pet.model.PetStatus;
-import JavaDevHomeWork5.user.model.User;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import JavaDevHomeWork5.state.MainState;
+import JavaDevHomeWork5.state.State;
 
 public class App {
+    private State state;
 
-    public static void main(String[] args) {
-//        User user = User.builder()
-//                .id(0L)
-//                .email("email")
-//                .firstName("firstName")
-//                .lastName("lastName")
-//                .password("1234567890")
-//                .phone("9379992")
-//                .username("petrovich")
-//                .userStatus(2)
-//                .build();
-//        String name = PetStatus.pending.toString();
-//        System.out.println("name = " + name);
+    public App() {
+        this.state = new MainState(this);
+    }
 
+    void startApp() {
+        while (true) {
+            state.execute();
+        }
+    }
+
+    public void changeState (State state){
+        this.state = state;
     }
 }

@@ -2,15 +2,16 @@ package JavaDevHomeWork5.user.service;
 
 import JavaDevHomeWork5.responce.model.ApiResponse;
 import JavaDevHomeWork5.retrofit.RetrofitService;
-import JavaDevHomeWork5.retrofit.client.UserRetrofitClient;
+import JavaDevHomeWork5.user.retrofitclient.UserRetrofitClient;
 import JavaDevHomeWork5.user.model.User;
+import JavaDevHomeWork5.utill.IdService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class UserService {
+public class UserService implements IdService {
     private static final UserRetrofitClient retrofitService = RetrofitService.getRetrofitService(UserRetrofitClient.class);
     private final Scanner scanner;
 
@@ -20,12 +21,12 @@ public class UserService {
 
     public ApiResponse createUserAndSendPostRequest () throws IOException {
         User createdUser = createUser();
-        return RetrofitService.cheekResponseCall(retrofitService.addUser(createdUser.getUsername(), createdUser));
+        return RetrofitService.cheekResponseCall(retrofitService.addUser(createdUser));
     }
 
     public ApiResponse createUsersArrayAndSendPostRequest () throws IOException {
         System.out.println("How many users are you want create?");
-        int amountOfUsers = scanner.nextInt();
+        int amountOfUsers = Integer.parseInt(scanner.nextLine());
         User[] userArray = new User[amountOfUsers];
 
         for (int i = 0; i < amountOfUsers; i++){
@@ -36,7 +37,7 @@ public class UserService {
 
     public ApiResponse createUsersListAndSendPostRequest () throws IOException {
         System.out.println("How many users are you want create?");
-        int amountOfUsers = scanner.nextInt();
+        int amountOfUsers = Integer.parseInt(scanner.nextLine());
         List<User> userList = new ArrayList<>(amountOfUsers);
 
         for (int i = 0; i < amountOfUsers; i++){
@@ -75,7 +76,7 @@ public class UserService {
     }
 
 
-    private User createUser (){
+    private User createUser () throws IOException {
         long id;
         String firstName;
         String lastName;
@@ -84,33 +85,34 @@ public class UserService {
         String password;
         String phone;
         int userStatus;
-
-        System.out.println("Write user ID(long):");
-        id = scanner.nextLong();
-        System.out.println("Write user FIRSTNAME:");
-        firstName = scanner.nextLine();
-        System.out.println("Write user LASTNAME:");
-        lastName = scanner.nextLine();
-        System.out.println("Write user EMAIL:");
-        email = scanner.nextLine();
-        System.out.println("Write user PHONE:");
-        phone = scanner.nextLine();
-        System.out.println("Write user USERNAME:");
-        username = scanner.nextLine();
-        System.out.println("Write user PASSWORD:");
-        password = scanner.nextLine();
-        System.out.println("Write user USER_STATUS(int):");
-        userStatus = scanner.nextInt();
-
-        return User.builder()
-                .id(id)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .phone(phone)
-                .username(username)
-                .password(password)
-                .userStatus(userStatus)
-                .build();
+        try {
+            id = getIDFromCommandLine(scanner);
+            System.out.println("Write user FIRSTNAME:");
+            firstName = scanner.nextLine();
+            System.out.println("Write user LASTNAME:");
+            lastName = scanner.nextLine();
+            System.out.println("Write user EMAIL:");
+            email = scanner.nextLine();
+            System.out.println("Write user PHONE:");
+            phone = scanner.nextLine();
+            System.out.println("Write user USERNAME:");
+            username = scanner.nextLine();
+            System.out.println("Write user PASSWORD:");
+            password = scanner.nextLine();
+            System.out.println("Write user USER_STATUS(int):");
+            userStatus = Integer.parseInt(scanner.nextLine());
+            return User.builder()
+                    .id(id)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .email(email)
+                    .phone(phone)
+                    .username(username)
+                    .password(password)
+                    .userStatus(userStatus)
+                    .build();
+        }catch (RuntimeException|IOException e){
+            throw new IOException(e);
+        }
     }
 }

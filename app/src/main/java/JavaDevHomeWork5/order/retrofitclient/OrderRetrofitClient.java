@@ -1,16 +1,15 @@
-package JavaDevHomeWork5.retrofit.client;
+package JavaDevHomeWork5.order.retrofitclient;
 
 import JavaDevHomeWork5.responce.model.ApiResponse;
-import JavaDevHomeWork5.store.model.Order;
+import JavaDevHomeWork5.order.model.Order;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.*;
 
 import java.util.Map;
 
-public interface StoreRetrofitClient {
+public interface OrderRetrofitClient {
 
-    @POST("order/order")
+    @POST("store/order")
     @Headers({"Content-Type: application/json"})
     Call<Order> placeAnOrder (@Body Order order);
 
