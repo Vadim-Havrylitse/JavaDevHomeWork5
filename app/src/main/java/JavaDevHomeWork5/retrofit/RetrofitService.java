@@ -2,7 +2,6 @@ package JavaDevHomeWork5.retrofit;
 
 import JavaDevHomeWork5.responce.model.ApiResponse;
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;

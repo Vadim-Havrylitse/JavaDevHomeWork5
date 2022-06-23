@@ -22,9 +22,9 @@ public class PetState extends State{
                 ,"press 1 -> Uploads an image"
                 ,"press 2 -> Add a new pet to the store"
                 ,"press 3 -> Update an existing pet"
-                ,"press 4 -> Finds Pets by status"
+                ,"press 4 -> Finds Pets by petStatus"
                 ,"press 5 -> Find pet by ID"
-                ,"press 6 -> Update name and/or status of pet in the store"
+                ,"press 6 -> Update name and/or petStatus of pet in the store"
                 ,"press 7 -> Delete a pet"
                 ,"press 0 -> MAIN MENU"};
         try {

@@ -4,11 +4,16 @@ import JavaDevHomeWork5.pet.model.Category;
 import JavaDevHomeWork5.pet.model.Pet;
 import JavaDevHomeWork5.pet.model.PetStatus;
 import JavaDevHomeWork5.pet.model.Tag;
+import JavaDevHomeWork5.pet.retrofitclient.PetRetrofitClient;
 import JavaDevHomeWork5.responce.model.ApiResponse;
 import JavaDevHomeWork5.retrofit.RetrofitService;
-import JavaDevHomeWork5.pet.retrofitclient.PetRetrofitClient;
 import JavaDevHomeWork5.utill.IdService;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,10 +29,24 @@ public class PetService implements IdService {
     }
 
     public ApiResponse addPhotoWithPet () throws IOException {
-        long id = getIDFromCommandLine(scanner);
-        System.out.println("Write PHOTO_URL:");
-        String photoURL = scanner.nextLine();
-        return RetrofitService.cheekResponseCall(retrofitService.uploadImage(id, photoURL));
+        try {
+            long id = getIDFromCommandLine(scanner);
+            System.out.println("Write additional data for photo to pass to server (may be empty)(may be empty):");
+            String metadataString = scanner.nextLine();
+
+            System.out.println("Write path to PHOTO on you device (C:\\***\\filename.jpeg):");
+            File inputFile = new File(scanner.nextLine());
+
+            MultipartBody.Part photo = MultipartBody.Part.createFormData(
+                    "file",
+                    inputFile.getName(),
+                    RequestBody.create(inputFile, MediaType.parse("image/*")));
+            RequestBody additionalMetadata = RequestBody.create(metadataString, MediaType.parse("text/plain"));
+
+            return RetrofitService.cheekResponseCall(retrofitService.uploadImage(id, additionalMetadata, photo));
+        }catch (FileNotFoundException | IllegalArgumentException e){
+            throw new IOException("Your image not found, look at example and try again.");
+        }
     }
 
     public Pet addNewPetToStore () throws IOException {
@@ -40,11 +59,11 @@ public class PetService implements IdService {
 
     public List<Pet> findPetsByStatus () throws IOException {
         List<String> array = new ArrayList<>();
-        System.out.println("Choose number of PET_STATUS(multiselect, for example 12,13,123,3 or 2 etc.):\n"
+        System.out.println("Choose number of PET_STATUS(multiselect, for example 12,13,123,3 etc.):\n"
                 + Arrays.toString(PetStatus.values()));
         for (char numberOfStatus : scanner.nextLine().toCharArray()) {
-            int index = Character.getNumericValue(numberOfStatus)-1;
-            array.add(PetStatus.values()[index].name());
+            int index = Character.getNumericValue(numberOfStatus);
+            array.add(PetStatus.getNameInLowerCase(index));
         }
         String[] filterByStatus = new String[array.size()];
         array.toArray(filterByStatus);
@@ -62,8 +81,9 @@ public class PetService implements IdService {
         String petName = scanner.nextLine();
         System.out.println("Choose number of PET_STATUS(1,2,3) for update:\n"
                 + Arrays.toString(PetStatus.values()));
-        PetStatus status = PetStatus.values()[Integer.parseInt(scanner.nextLine())-1];
-        return RetrofitService.cheekResponseCall(retrofitService.updatePet(id, petName, status.name()));
+        int index = Integer.parseInt(scanner.nextLine());
+        String statusInLowerCase = PetStatus.getNameInLowerCase(index);
+        return RetrofitService.cheekResponseCall(retrofitService.updatePet(id, petName, statusInLowerCase));
     }
 
     public ApiResponse deletePet () throws IOException {
@@ -77,7 +97,7 @@ public class PetService implements IdService {
         String petName;
         List<String> photoUrls = new ArrayList<>();
         List<Tag> tags = new ArrayList<>();
-        PetStatus status;
+        String status;
 
         try {
             id = getIDFromCommandLine(scanner);
@@ -87,7 +107,7 @@ public class PetService implements IdService {
             category.setId(Long.parseLong(scanner.nextLine()));
             System.out.println("Write CATEGORY_NAME:");
             category.setName(scanner.nextLine());
-            System.out.println("How many tags are you want to add?");
+            System.out.println("How many tags are you want to add? (may be 0)");
             int index = Integer.parseInt(scanner.nextLine());
             for (int i = 0; i < index; i++) {
                 Tag tag = new Tag();
@@ -97,7 +117,7 @@ public class PetService implements IdService {
                 tag.setName(scanner.nextLine());
                 tags.add(tag);
             }
-            System.out.println("How many URL of photo are you want to add?");
+            System.out.println("How many URL of photo are you want to add? (may be 0)");
             index = Integer.parseInt(scanner.nextLine());
             for (int i = 0; i < index; i++) {
                 System.out.println("Add PHOTO_URL:");
@@ -105,11 +125,12 @@ public class PetService implements IdService {
             }
             System.out.println("Choose number of PET_STATUS(1,2,3):\n"
                     + Arrays.toString(PetStatus.values()));
-            status = PetStatus.values()[Integer.parseInt(scanner.nextLine()) - 1];
+            index = Integer.parseInt(scanner.nextLine());
+            status = PetStatus.getNameInLowerCase(index);
             return Pet.builder()
                     .id(id)
                     .petName(petName)
-                    .status(status)
+                    .petStatus(status)
                     .photoUrls(photoUrls)
                     .category(category)
                     .tags(tags)

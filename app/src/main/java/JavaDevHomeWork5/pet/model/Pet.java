@@ -29,9 +29,9 @@ public class Pet implements Serializable, ModelService {
     @SerializedName("tags")
     @Expose
     private List<Tag> tags;
-    @SerializedName("status")
+    @SerializedName("petStatus")
     @Expose
-    private PetStatus status;
+    private String petStatus;
 
     @Override
     public String toString() {
@@ -41,7 +41,7 @@ public class Pet implements Serializable, ModelService {
                 .add("petName='" + formatOutputData(petName) + "'")
                 .add("photoUrls=" + formatOutputData(photoUrls))
                 .add("tags=" + formatOutputData(tags))
-                .add("status=" + formatOutputData(status))
+                .add("petStatus=" + formatOutputData(petStatus))
                 .toString();
     }
 

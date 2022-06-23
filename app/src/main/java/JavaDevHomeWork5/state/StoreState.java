@@ -21,7 +21,7 @@ public class StoreState extends State{
                 ,"press 1 -> Place an order for a pet"
                 ,"press 2 -> Find purchase order by ID"
                 ,"press 3 -> Delete purchase order by ID"
-                ,"press 4 -> Returns pet inventories by status"
+                ,"press 4 -> Returns pet inventories by petStatus"
                 ,"press 0 -> MAIN MENU"};
         try {
             switch (checkCorrectInputAndReturnNumber(message)) {

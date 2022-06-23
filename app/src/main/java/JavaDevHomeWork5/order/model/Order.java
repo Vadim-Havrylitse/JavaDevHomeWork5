@@ -25,9 +25,9 @@ public class Order implements Serializable, ModelService {
     @SerializedName("shipDate")
     @Expose
     private String shipDate;
-    @SerializedName("status")
+    @SerializedName("orderStatus")
     @Expose
-    private OrderStatus status;
+    private OrderStatus orderStatus;
     @SerializedName("complete")
     @Expose
     private boolean complete;
@@ -39,7 +39,7 @@ public class Order implements Serializable, ModelService {
                 .add("petId=" + formatOutputData(petId))
                 .add("quantity=" + formatOutputData(quantity))
                 .add("shipDate='" + formatOutputData(shipDate) + "'")
-                .add("status=" + formatOutputData(status))
+                .add("petStatus=" + formatOutputData(orderStatus))
                 .add("complete=" + formatOutputData(complete))
                 .toString();
     }
