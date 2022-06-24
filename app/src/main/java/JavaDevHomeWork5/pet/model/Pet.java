@@ -29,9 +29,9 @@ public class Pet implements Serializable, ModelService {
     @SerializedName("tags")
     @Expose
     private List<Tag> tags;
-    @SerializedName("petStatus")
+    @SerializedName("status")
     @Expose
-    private String petStatus;
+    private PetStatus petStatus;
 
     @Override
     public String toString() {

@@ -1,11 +1,18 @@
 package JavaDevHomeWork5.order.model;
 
-public enum OrderStatus {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public enum OrderStatus implements Serializable {
+    @SerializedName("placed")
     PLACED,
+    @SerializedName("approved")
     APPROVED,
+    @SerializedName("delivered")
     DELIVERED;
 
-    public static String getNameInLowerCase(int index){
-        return OrderStatus.values()[index-1].name().toLowerCase();
+    public static OrderStatus getByIndex(int index){
+        return OrderStatus.values()[index-1];
     }
 }

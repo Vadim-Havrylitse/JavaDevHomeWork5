@@ -97,7 +97,7 @@ public class PetService implements IdService {
         String petName;
         List<String> photoUrls = new ArrayList<>();
         List<Tag> tags = new ArrayList<>();
-        String status;
+        PetStatus status;
 
         try {
             id = getIDFromCommandLine(scanner);
@@ -126,7 +126,7 @@ public class PetService implements IdService {
             System.out.println("Choose number of PET_STATUS(1,2,3):\n"
                     + Arrays.toString(PetStatus.values()));
             index = Integer.parseInt(scanner.nextLine());
-            status = PetStatus.getNameInLowerCase(index);
+            status = PetStatus.getByIndex(index);
             return Pet.builder()
                     .id(id)
                     .petName(petName)

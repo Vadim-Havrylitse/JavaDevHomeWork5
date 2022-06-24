@@ -47,7 +47,7 @@ public class OrderService implements IdService {
             System.out.println("Choose number of ORDER_STATUS(1,2,3):\n"
                     + Arrays.toString(OrderStatus.values()));
             int inputNumberOfStatus = Integer.parseInt(scanner.nextLine());
-            status = OrderStatus.values()[inputNumberOfStatus-1];
+            status = OrderStatus.getByIndex(inputNumberOfStatus);
             System.out.println("Order COMPLETE?\n"
                     + "press1 -> true\n"
                     + "press2 -> false");

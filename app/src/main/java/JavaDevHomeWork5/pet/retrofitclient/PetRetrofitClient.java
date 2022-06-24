@@ -24,7 +24,7 @@ public interface PetRetrofitClient {
 
     @GET("pet/findByStatus")
     @Headers({"Content-Type: application/json"})
-    Call<List<Pet>> findByStatus (@Query("petStatus") String[] petStatuses);
+    Call<List<Pet>> findByStatus (@Query("status") String[] petStatuses);
 
     @GET("pet/{petId}")
     @Headers({"Content-Type: application/json"})
